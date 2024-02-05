@@ -1,4 +1,4 @@
-# PetShop
+# PetShop 🐶
 
 ## Introduction
 The ASP.NET MVC Petshop is a web application designed to showcase a simple online catalog for a pet shop. It enables customers to browse through the catalog, view detailed information on individual animals, and leave comments.

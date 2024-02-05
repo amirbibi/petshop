@@ -1,0 +1,60 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]!.ToString();
+    var action = ViewContext.RouteData.Values["action"]!.ToString();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/styles/bootstrap.css" rel="stylesheet" />
+    <link href="~/styles/style.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+                <img src="~/images/assets/petshoplogo.png" width="80" height="60" alt="Pet Shop logo" class="rounded-5">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link @(controller == "Home" && action == "Index" ? "active" : "")" asp-action="Index" asp-controller="Home">Home</a>
+                    <a class="nav-item nav-link @(controller == "Catalog" && action == "Index" ? "active" : "")" asp-action="Index" asp-controller="Catalog">Catalog</a>
+                    @if (User.IsInRole("Admins"))
+                    {
+                        <a class="nav-item nav-link @(controller == "Administrator" && action == "Index" ? "active" : "")" asp-action="Index" asp-controller="Administrator">Administrator</a>
+                    }
+                    @if (!User.Identity!.IsAuthenticated)
+                    {
+                        <a class="nav-item nav-link @(controller == "Account" && action == "Register" ? "active" : "")" asp-action="Register" asp-controller="Account">Register</a>
+                        <a class="nav-item nav-link @(controller == "Account" && action == "Login" ? "active" : "")" asp-action="Login" asp-controller="Account">Login</a>
+                    }
+                    else
+                    {
+                        <a class="nav-item nav-link @(controller == "Account" && action == "Logout" ? "active" : "")" asp-action="Logout" asp-controller="Account">Logout</a>
+                    }
+                </div>
+            </div>
+            <h1 id="petshop-title" class="display-6 fw-semibold" style="color: #ff6347;">The Best Pet Shop In Town</h1>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-4 text-center">
+        <h2 id="page-title" class="text-center fw-normal my-4 display-6" >@ViewBag.Title</h2>
+    </div>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <script type="module" src="~/scripts/jquery.js"></script>
+    <script type="module" src="~/scripts/jquery.validate.min.js"></script>
+    <script type="module" src="~/scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="module" src="~/scripts/popper.js"></script>
+    <script type="module" src="~/scripts/bootstrap.js"></script>
+    <script type="module" src="~/scripts/filter.js"></script>
+</body>
+</html>

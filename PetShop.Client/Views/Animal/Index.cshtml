@@ -1,0 +1,129 @@
+﻿@model PetShop.Models.Animal
+@{
+}
+<link href="~/styles/all.min.css" rel="stylesheet" />
+
+<h2 class="display-5 mb-5 text-center fw-medium bg-gradient text-white p-2" style="background-color: #ff6347;">@Model.Name</h2>
+
+<div class="container mt-4 m-6">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card mb-4">
+                <img src="~/images/animals/@Model.PictureName" alt="@Model.Name" class="card-img-top" style="max-width: 100%; height: auto;">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Name</h5>
+                    <p class="card-text"><strong>Age:</strong> @Model.Age</p>
+                    <p class="card-text"><strong>Description:</strong> @Model.Description</p>
+                    <p class="card-text"><strong>Category:</strong> @ViewBag.Category.Name</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            @if (User.Identity!.IsAuthenticated)
+            {
+            <form asp-action="AddComment" asp-route-id="@Model.AnimalId" asp-route-user="@User.Identity.Name" method="post" class="mb-4 d-flex">
+                <div class="flex-grow-1 me-2">
+                    <input type="text" name="commentContent" class="form-control" id="commentInput" required placeholder="Add your comment here..."
+                            oninvalid="this.setCustomValidity('Please enter a comment')"
+                            oninput="this.setCustomValidity('')">
+                </div>
+                <button type="submit" class="btn text-white align-self-stretch bg-gradient" style="background-color: #ff6347;">Submit Comment</button>
+            </form>
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    <h4 class="alert-heading">You are not Logged In!</h4>
+                    <p>Login to leave a comment.</p>
+                </div>
+            }
+
+            <div class="card mb-4">
+                <div class="card-header fw-medium">
+                    Comments on @Model.Name
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var c in ViewBag.Comments)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-start p-3 text-break">
+                            <div class="mb-0 flex-grow-1 mx-2" >
+                                <p id="comment-content-@c.Id">
+                                    @c.Content
+                                </p>
+                                <div class="mt-2">
+                                    <i class="fas fa-comment"></i> <strong> @c.UserName</strong>
+                                </div>
+                            </div>
+                            @if (User.Identity.IsAuthenticated && (User.IsInRole("Admins") || User.Identity.Name!.Equals(c.UserName)))
+                            {
+                                <a class="btn btn-outline-success btn-sm" id="save-button-@c.Id" onclick="saveEdit(@Model.AnimalId, @c.Id)" title="Save" style="display: none;">
+                                    <i class="fas fa-save"></i>
+                                </a>
+
+                                <a class="btn btn-outline-dark btn-sm mx-2" onclick="addContenteditableToButton(@c.Id)" id="edit-comment-button-@c.Id" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <a class="btn btn-outline-danger btn-sm" asp-action="DeleteComment" asp-route-id="@Model.AnimalId" asp-route-commentId="@c.Id" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let addContenteditableToButton = (commentId) => {
+        let commentContentElement = $('#comment-content-' + commentId);
+        let editButton = $('#edit-button-' + commentId);
+        let saveButton = $('#save-button-' + commentId);
+        let isCurrentlyEditable = commentContentElement.attr('contenteditable') === 'true';
+
+        commentContentElement.attr('contenteditable', !isCurrentlyEditable);
+        commentContentElement.toggleClass('editable-comment');
+
+        if (!isCurrentlyEditable) {
+            commentContentElement.data('original-content', commentContentElement.text());
+        } else {
+            let originalContent = commentContentElement.data('original-content');
+            if (originalContent !== undefined) {
+                commentContentElement.text(originalContent);
+            }
+        }
+
+        editButton.toggle();
+        saveButton.toggle();
+    };
+
+
+    let saveEdit = (animalId, commentId) => {
+        let commentContentElement = $('#comment-content-' + commentId);
+        let editedContent = commentContentElement.text();
+
+        $.ajax({
+            url: '@Url.Action("EditComment")',
+            method: 'POST',
+            data: {
+                id: animalId,
+                commentId: commentId,
+                newContent: editedContent
+            },
+            success: function (response) {
+                commentContentElement
+                    .removeClass('editable-comment')
+                    .attr('contenteditable', 'false');
+
+                $('#save-button-' + commentId).hide();
+                $('#edit-button-' + commentId).show();
+            },
+            error: function (error) {
+                alert(error.responseText);
+                location.reload();
+            }
+        });
+    }
+</script>

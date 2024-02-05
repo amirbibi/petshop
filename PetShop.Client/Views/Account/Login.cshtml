@@ -1,0 +1,49 @@
+﻿@model PetShop.Models.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+@if (!User.Identity!.IsAuthenticated)
+{
+   <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-4 border-2" style="border-color: #ff6347;">
+                <div class="card-body p-4">
+                    <form method="post" asp-action="Login">
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Username">Username</label>
+                            <input class="form-control" asp-for="Username" placeholder="Enter Username" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Password">Password</label>
+                            <input class="form-control" asp-for="Password" type="password" placeholder="Enter Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-dark w-100 p-2">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+} else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-warning" role="alert">
+                    <h4 class="alert-heading">Already Logged In!</h4>
+                    <p>You are already logged in. No further action is required.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}

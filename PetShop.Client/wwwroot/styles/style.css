@@ -1,0 +1,22 @@
+﻿body {
+    background-color: antiquewhite;
+}
+
+#petshop-title {
+    text-align: center;
+    font-size: 28px;
+}
+
+.second-color {
+    color: #ff6347;
+}
+
+.second-color:hover {
+    color: orangered;
+}
+
+.editable-comment {
+    border: 2px solid red;
+    padding: 8px;
+    outline: none;
+}

@@ -1,0 +1,67 @@
+﻿@model PetShop.Models.Animal
+@{
+    ViewData["Title"] = "Animal Details";
+}
+
+<div class="d-flex justify-content-center mb-4">
+    <div class="card mb-4 w-75 border-2" style="border-color: #ff6347;">
+        <div class="card-body">
+            <form id="new-animal-form" asp-action="CreateOrEdit" method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Name">Name</label>
+                    <input class="form-control" asp-for="Name" placeholder="Enter Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Age">Age</label>
+                    <input class="form-control" asp-for="Age" min="0" placeholder="Enter Age" />
+                    <span asp-validation-for="Age" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    @if (Model != null && !string.IsNullOrEmpty(Model.PictureName))
+                    {
+                        <div class="mb-3">
+                            <img src="@Url.Content($"~/images/animals/{Model.PictureName}")" alt="Current Picture" class="img-thumbnail" style="width: 200px; height: 160px;">
+                        </div>
+                        <label asp-for="NewPictureFile" class="form-label">Upload New Picture</label>
+                        <input asp-for="NewPictureFile" class="form-control" type="file">
+                        <span asp-validation-for="NewPictureFile" class="text-danger"></span>
+                        <input type="hidden" asp-for="PictureFile" />
+                        <input type="hidden" asp-for="PictureName" />
+                        <input type="hidden" asp-for="AnimalId" />
+                    }
+                    else
+                    {
+                        <label asp-for="PictureFile" class="form-label">Upload Picture</label>
+                        <input asp-for="PictureFile" class="form-control" type="file">
+                        <span asp-validation-for="PictureFile" class="text-danger"></span>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Description">Description</label>
+                    <textarea class="form-control" asp-for="Description" placeholder="Enter Description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="CategoryId">Category</label>
+                    <select asp-for="CategoryId" class="form-select" required>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.CategoryId">@category.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-dark w-100 p-2">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

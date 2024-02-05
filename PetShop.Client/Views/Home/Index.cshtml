@@ -1,0 +1,37 @@
+﻿@model IEnumerable<PetShop.Models.Animal>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="d-flex justify-content-center mb-4">
+    <div class="card border-2 p-4" style="border-color: #ff6347;">
+        <div class="card-header">
+            <h3 class="fw-light text-center mb-0">The Two Most Commented Pets</h3>
+        </div>
+        <div class="card-body">
+            <div class="container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Picture</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Comment Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var animal in Model)
+                        {
+                            <tr>
+                                <td><img src="~/images/animals/@animal.PictureName" alt="@animal.Name" width="100px" height="80px" /></td>
+                                <td>@animal.Name</td>
+                                <td>@animal.Description</td>
+                                <td>@animal.Comments!.Count</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
